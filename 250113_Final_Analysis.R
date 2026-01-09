@@ -5,6 +5,7 @@ library(Rgraphviz)
 library(lavaanPlot)
 library (stats)
 library(igraph)
+library(DiagrammeRsvg)
 ### Analysis Domains ###
 
 ## Read Dataset
@@ -79,6 +80,9 @@ sys2=sem(model=mod2.sem, data=dat2[,c(3:23)], ordered = names(dat2)[3:8])
 
 fitmeasures(sys1)
 fitmeasures(sys2)
+
+summary(sys1, fit.measures = TRUE, rsquare = TRUE)
+summary(sys2, fit.measures = TRUE, rsquare = TRUE)
 
 BIC1=-2*logLik(mod1, dat2[,c(3:23)])+nparams(mod1,dat2[,c(3:23)])*log(nrow(dat))
 BIC2=-2*logLik(mod2.3, dat2[,c(3:23)])+nparams(mod2.3,dat2[,c(3:23)])*log(nrow(dat))
@@ -200,7 +204,9 @@ round(median(dat2$PANSS.General),2)
 round(median(dat2$CGI.Severity),2)
 round(median(dat2$QOL),2)
 
-
+round(median(dat2$DAI))
+round(median(dat2$CDSS))
+table(dat2$Employment)
 
 set.seed(1000)
 
@@ -216,4 +222,12 @@ prob1.9=cpquery(param1, event=(MATRICS.Verbal< median(dat2$MATRICS.Verbal)), evi
 prob1.10=cpquery(param1, event=(PANSS.General> median(dat2$PANSS.General)), evidence = (MATRICS.Memory< median(dat2$MATRICS.Memory)))
 prob1.11=cpquery(param1, event=(CGI.Severity> median(dat2$CGI.Severity)), evidence = (MATRICS.Memory< median(dat2$MATRICS.Memory)))
 
-round(c(prob1.1,prob1.2,prob1.3,prob1.4,prob1.5,prob1.6,prob1.7,prob1.8,prob1.9,prob1.10,prob1.11),3)
+prob1.12=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (DAI< median(dat2$DAI)))
+prob1.13=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (CGI.Severity> median(dat2$CGI.Severity)))
+prob1.14=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (PANSS.Negative> median(dat2$PANSS.Negative)))
+prob1.15=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (CDSS>median(dat2$CDSS)))
+prob1.16=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (Employment==1))
+prob1.17=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (Employment==2))
+prob1.18=cpquery(param1, event=(QOL< median(dat2$QOL)), evidence = (Employment==3))
+
+round(c(prob1.1,prob1.2,prob1.3,prob1.4,prob1.5,prob1.6,prob1.7,prob1.8,prob1.9,prob1.10,prob1.11,prob1.12,prob1.13,prob1.14,prob1.15,prob1.16,prob1.17,prob1.18),3)
